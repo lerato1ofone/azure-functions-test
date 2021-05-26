@@ -1,0 +1,18 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    },
+    "logLevel": {
+      "PracticalTest.Functions.TodoFunction": "Error",
+      "PracticalTest.Functions.DatabaseFunctions": "Error",
+      "PracticalTest.Services.Employee.EmployeeService": "Error",
+      "PracticalTest.Functions.Todo.TodoService": "Information",
+      "PracticalTest.Functions.HttpProvider": "Error"
+    }
+  }
+}
