@@ -1,8 +1,9 @@
-﻿using AzureFunctions.Extensions.Swashbuckle;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using PracticalTest.Services.Todo;
+using PracticalTest.Services.Employee;
+using System;
 
 [assembly: FunctionsStartup(typeof(PracticalTest.Startup))]
 namespace PracticalTest
@@ -11,16 +12,22 @@ namespace PracticalTest
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.AddSwashBuckle(Assembly.GetExecutingAssembly());
             ConfigureServices(builder.Services).BuildServiceProvider(true);
         }
 
         private IServiceCollection ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient();
+            var connectionString =
+                Environment.GetEnvironmentVariable("SqlServerConnection");
+                services.AddDbContext<ApplicationDbContext>(x =>
+                {
+                    x.UseSqlServer(connectionString
+                    , options => options.EnableRetryOnFailure());
+                });
 
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer("Data Source=DESKTOP-37BVSQ0;Initial Catalog=Company;Integrated Security=True"));
+            services.AddHttpClient();
+            services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
         }
