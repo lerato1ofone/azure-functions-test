@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PracticalTest.Services.Todo;
 using PracticalTest.Services.Employee;
 using System;
+using PracticalTest.Services.Persons;
 
 [assembly: FunctionsStartup(typeof(PracticalTest.Startup))]
 namespace PracticalTest
@@ -26,8 +27,10 @@ namespace PracticalTest
                 });
 
             services.AddHttpClient();
+
             services.AddScoped<ITodoService, TodoService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IPersonsService, PersonsService>();
 
             return services;
         }
