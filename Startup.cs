@@ -5,6 +5,7 @@ using PracticalTest.Services.Todo;
 using PracticalTest.Services.Employee;
 using System;
 using PracticalTest.Services.Persons;
+using PracticalTest.Services.PersonalRecords;
 
 [assembly: FunctionsStartup(typeof(PracticalTest.Startup))]
 namespace PracticalTest
@@ -31,6 +32,7 @@ namespace PracticalTest
             services.AddScoped<ITodoService, TodoService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IPersonsService, PersonsService>();
+            services.AddScoped<IPersonalRecordsService, PersonalRecordsService>();
 
             return services;
         }
