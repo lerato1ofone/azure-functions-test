@@ -19,14 +19,14 @@ namespace PracticalTest.Functions
 
         private readonly ITodoService _todoService;
 
-        public TodoFunction(ITodoService service, ILogger<TodoFunction> logger)
+        public TodoFunction(ITodoService todoService, ILogger<TodoFunction> logger)
         {
-            this._todoService = service;
+            this._todoService = todoService;
             this._logger = logger;
         }
 
         [OpenApiOperation(operationId: "getTodo", tags: new[] { "Todo" }, Summary = "Gets a todo", Description = "This gets a todo.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The id", Description = "The todo's id", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "The id", Description = "The todo's id", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Models.Todo), Summary = "The response", Description = "This returns the response")]
         [FunctionName("todo")]
@@ -35,16 +35,13 @@ namespace PracticalTest.Functions
         {
             try
             {
-                int id;
-
-                int.TryParse(req.Query["id"][0], out id);
+                int.TryParse(req.Query["id"][0], out int id);
 
                 var todo = await _todoService.GetTodo(id);
 
-                if (todo != null)
-                    return new OkObjectResult(todo);
-
-                return new OkObjectResult("No content");
+                return todo != null
+                    ? (ActionResult)new OkObjectResult(todo)
+                    : new NotFoundObjectResult($"Todo with id {id} could not found.");
             }
             catch (Exception e)
             {

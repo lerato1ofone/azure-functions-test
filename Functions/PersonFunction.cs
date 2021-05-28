@@ -30,13 +30,13 @@ namespace PracticalTest.Functions
           [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
           ILogger log)
         {
-            log.LogInformation("Getting people");
+            log.LogInformation("Getting persons");
 
-            var Employees = await _personsService.GetPeople();
+            var Persons = await _personsService.GetPeople();
 
-            return Employees != null
-                ? (ActionResult)new OkObjectResult(Employees)
-                : new NoContentResult();
+            return Persons != null
+                ? (ActionResult)new OkObjectResult(Persons)
+                : new NotFoundObjectResult("No persons found");
         }
     }
 }

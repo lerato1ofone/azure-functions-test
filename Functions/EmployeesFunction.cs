@@ -16,9 +16,12 @@ namespace PracticalTest.Functions
     {
         private readonly IEmployeeService _employeeService;
 
-        public EmployeesFunction(IEmployeeService employeeService)
+        private readonly ILogger<EmployeesFunction> _logger;
+
+        public EmployeesFunction(IEmployeeService employeeService, ILogger<EmployeesFunction> logger)
         {
             _employeeService = employeeService;
+            this._logger = logger;
         }
 
         [OpenApiOperation(operationId: "getEmployees", tags: new[] { "Employees" }, Summary = "Gets employees", Description = "This gets a list of employees.", Visibility = OpenApiVisibilityType.Important)]
@@ -26,16 +29,15 @@ namespace PracticalTest.Functions
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Models.Employee), Summary = "The response", Description = "This returns the response")]
         [FunctionName("employees")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
         {
-            log.LogInformation("Getting employees");
+            _logger.LogInformation("Getting employees");
 
             var Employees = await _employeeService.GetEmployees();
 
             return Employees != null
                 ? (ActionResult)new OkObjectResult(Employees)
-                : new NoContentResult();
+                : new NotFoundObjectResult("No employees found");
         }
     }
 }
